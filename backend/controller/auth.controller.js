@@ -4,10 +4,10 @@ import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 export const signup = async (req, res) => {
   try {
-    const { fullName, username, password, confirmedPassword, gender } =
+    const { fullName, username, password, confirmPassword, gender } =
       req.body;
 
-    if (password !== confirmedPassword) {
+    if (password !== confirmPassword) {
       return res.status(400).json({ error: "Passwords don't match!!" });
     }
 
@@ -61,8 +61,8 @@ export const login = async (req, res) => {
       user?.password || ""
     );
 
-    if (!user || !isPasswordCorrect) {
-      res.status(400).json({ error: "Invalid User or Password!!" });
+    if ( !isPasswordCorrect  || !user ) {
+      return res.status(400).json({ error: "Invalid User or Password!!" });
     }
 
     generateTokenAndSetCookie(user._id, res);
@@ -75,7 +75,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in logging controller", error);
-    res.status(400).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
